@@ -20,3 +20,9 @@ p {
   -ms-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
 }
+
+nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
