@@ -126,17 +126,17 @@ function storeHighScores(finalScore, initials) {
 
     highScoreArray.push(userScore)
 
-    var scoresArrayString = JSON.stringify(highScoreArray)
-    window.localStorage.setItem("high scores", scoresArrayString)
+    localStorage.setItem("highScores", JSON.stringify(highScoreArray))
 
     console.log(userScore)
+    console.log(highScoreArray)
 
-    displayHighScores(highScoreArray)
+    displayHighScores()
 }
 
-function displayHighScores(highScoreArray) {
+function displayHighScores() {
 
-    var savedHighScores = localStorage.getItem("high scores")
+    var savedHighScores = localStorage.getItem("highScores")
     
     if(savedHighScores === null) {
         return
