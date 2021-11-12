@@ -30,6 +30,7 @@ var questions = [
 // Declared variables
 var score = 60;
 var index = 0;
+var finalScore;
 
 // on start quiz button push (event handler)
 document.getElementById("startButton").addEventListener("click", function(){
@@ -38,9 +39,17 @@ document.getElementById("startButton").addEventListener("click", function(){
     // display first question & choices
     document.getElementById("openers").style.display="none";
     displayNext()
-    setInterval(function(){
-        
-    })
+    countDown = setInterval(function(){
+        score--;
+        document.getElementById("currentTime").textContent="Current remaining time is " + score + " seconds"
+        if(score <= 0) {
+            clearInterval(countDown)
+            if(index < questions.length){
+                clearInterval(countDown)
+                gameOver()
+            }
+        }
+    }, 1000)
 
 })
 
@@ -57,16 +66,19 @@ function checkAnswer(event){
     if(event.target.textContent === questions[index]["answer"]){
         // display something to indicate correct selectoin for 3 seconds 
         document.getElementById("questions").children[5].textContent="Correct!"
-        displayNext()
     } else {
         // else 
         // display something to indicate incorrect selection for 3 seconds
         document.getElementById("questions").children[5].textContent="Wrong!"
         // decrement time
-        score--
-        displayNext()
+        score = score-5
     }
     index++
+    if(index < questions.length){
+        displayNext()
+    } else {
+        gameOver()
+    }
 }
 
 function displayNext() {
@@ -77,7 +89,68 @@ function displayNext() {
     document.getElementById("questions").children[4].textContent=questions[index]["choices"][3]
     
 }
+
+function gameOver() {
+    console.log("Game Over")
+    document.getElementById("currentTime").style.display="none"
+    document.getElementById("questions").children[0].style.display="none"
+    document.getElementById("questions").children[1].style.display="none"
+    document.getElementById("questions").children[2].style.display="none"
+    document.getElementById("questions").children[3].style.display="none"
+    document.getElementById("questions").children[4].style.display="none"
+    document.getElementById("questions").children[5].style.display="none"
+    document.getElementById("finalScore").textContent= score
+    document.getElementById("highScore").textContent= "Game OVER!"
+     finalScore=score
+    console.log(finalScore)
+
+    var initials = prompt("Please enter your initials to log your high score", "Initials")
+    console.log(initials)
+
+    storeHighScores(finalScore, initials)
+}
  
+function storeHighScores(finalScore, initials) {
+
+    if(initials === ""){
+        alert("Please enter your initials!")
+        return;
+    }
+
+    var highScoreArray=[]
+
+    var userScore = {
+        initials: initials,
+        score: finalScore
+    }
+
+    highScoreArray.push(userScore)
+
+    var scoresArrayString = JSON.stringify(highScoreArray)
+    window.localStorage.setItem("high scores", scoresArrayString)
+
+    console.log(userScore)
+
+    displayHighScores(highScoreArray)
+}
+
+function displayHighScores(highScoreArray) {
+
+    var savedHighScores = localStorage.getItem("high scores")
+    
+    if(savedHighScores === null) {
+        return
+    }
+    console.log(savedHighScores);
+
+    var storedHighScores = JSON.parse(savedHighScores)
+
+    for(var i = 0; i < storedHighScores.length; i++) {
+        var newHighScore = document.createElement("p")
+        newHighScore.innerHTML = storedHighScores[i].initials + ": " + storedHighScores[i].score
+        highScore.appendChild(newHighScore)
+    }
+}
 
 // for multiple choice selection (event  handler)
 // conditional to check if the selected choice matches the answer
